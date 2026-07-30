@@ -1,5 +1,6 @@
 from enum import Enum
 from dataclasses import dataclass
+import time
 
 class Side(Enum):
     BUY = "BUY"
@@ -15,7 +16,7 @@ class Order:
     side: Side
     price: float
     quantity: int
-    timestamp: float
+    timestamp: float = time.time()
 
 @dataclass
 class Trade:

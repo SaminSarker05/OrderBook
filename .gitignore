@@ -2,3 +2,4 @@
 notes.txt
 plan.md
 venv/
+__pycache__/
