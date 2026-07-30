@@ -31,4 +31,20 @@ class DoublyLinkedList:
     def is_empty(self) -> bool:
         return self.size == 0
 
+    def pop_left(self) -> Order | None:
+        if self.size == 0:
+            return None
     
+        next_node = self.head.next
+        
+        next_node.next.prev = self.head
+        self.head.next = next_node.next
+        
+        return next_node.order
+
+    def unlink(self, node: Node) -> None:
+        after_node = node.next
+        before_node = node.prev
+        
+        before_node.next = after_node
+        after_node.prev = before_node
