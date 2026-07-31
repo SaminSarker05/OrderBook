@@ -1,50 +1,54 @@
 from models import Order
 
 class Node:
-    def __init__(self, order: Order | None, prev: Order | None, next: Order | None):
+    def __init__(self, order: Order):
         self.order = order
-        self.prev = prev
-        self.next = next
-    
+        self.next = None
+        self.prev = None
 
 class DoublyLinkedList:
     def __init__(self):
         self.head = Node()
         self.tail = Node()
         self.size = 0
-        
+
         self.head.next = self.tail
         self.tail.prev = self.head
     
+    def unlink(self, node: Node):
+        next_node = node.next
+        prev_node = node.prev
+
+        prev_node.next = next_node
+        next_node.prev = prev_node
+    
+    def add_to_tail(self, node: Node):
+        curr_oldest_order = self.tail.prev
+        
+        curr_oldest_order.next = node
+        node.prev = curr_oldest_order
+        
+        node.next = self.tail
+        self.tail.prev = node
+    
     def append(self, order: Order) -> Node:
         new_node = Node(order)
-        next_node = self.head.next
-        
-        self.head.next = new_node
-        new_node.prev = self.head
-        
-        next_node.prev = new_node
-        new_node.next = next_node
-        
+        self.add_to_tail(new_node)
+
         self.size += 1
-        
-    def is_empty(self) -> bool:
-        return self.size == 0
+        return new_node
 
     def pop_left(self) -> Order | None:
         if self.size == 0:
             return None
     
-        next_node = self.head.next
+        most_recent_order = self.head.next
+        new_most_recent_order = self.head.next.next
         
-        next_node.next.prev = self.head
-        self.head.next = next_node.next
+        self.head.next = new_most_recent_order
+        new_most_recent_order.prev = self.head
         
-        return next_node.order
-
-    def unlink(self, node: Node) -> None:
-        after_node = node.next
-        before_node = node.prev
-        
-        before_node.next = after_node
-        after_node.prev = before_node
+        return most_recent_order.order
+    
+    def is_empty(self) -> bool:
+        return self.head.next == self.tail

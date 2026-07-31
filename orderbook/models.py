@@ -16,7 +16,7 @@ class Order:
     side: Side
     price: float
     quantity: int
-    timestamp: float = time.time()
+    timestamp: float = field(default_factory=time.time)
 
 @dataclass
 class Trade:
@@ -26,5 +26,5 @@ class Trade:
     maker_order_id: str
     taker_order_id: str
     price: float
-    quantity: float
+    quantity: int
     timestamp: float
