@@ -15,14 +15,16 @@ class DoublyLinkedList:
         self.head.next = self.tail
         self.tail.prev = self.head
     
-    def unlink(self, node: Node):
+    def unlink(self, node: Node) -> Node:
         next_node = node.next
         prev_node = node.prev
 
         prev_node.next = next_node
         next_node.prev = prev_node
+        
+        return node
     
-    def add_to_tail(self, node: Node):
+    def _add_to_tail(self, node: Node):
         curr_oldest_order = self.tail.prev
         
         curr_oldest_order.next = node
@@ -33,7 +35,7 @@ class DoublyLinkedList:
     
     def append(self, order: Order) -> Node:
         new_node = Node(order)
-        self.add_to_tail(new_node)
+        self._add_to_tail(new_node)
 
         self.size += 1
         return new_node
@@ -48,6 +50,7 @@ class DoublyLinkedList:
         self.head.next = new_most_recent_order
         new_most_recent_order.prev = self.head
         
+        self.size -= 1
         return most_recent_order.order
     
     def is_empty(self) -> bool:
