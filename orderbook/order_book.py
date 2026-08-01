@@ -39,7 +39,7 @@ class OrderBook:
         """
         book_side = self.bids if order.side == Side.BUY else self.asks
         if order.price not in book_side:
-            book_side[order.price] = PriceLevel()
+            book_side[order.price] = PriceLevel(order.price)
         
         node = OrderNode(order)
         book_side[order.price].append(node)
