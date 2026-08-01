@@ -2,8 +2,6 @@ from decimal import Decimal
 from orderbook.models import Order, Trade, Side, OrderType
 from orderbook.order_book import OrderBook
 
-################################################################################
-
 class MatchingEngine:
     """Execute LIMIT and MARKET orders using price-time priority."""
     def __init__(self):
@@ -46,7 +44,7 @@ class MatchingEngine:
                               else resting_order.order_id),
                 sell_order_id=(order.order_id if order.side == Side.SELL 
                               else resting_order.order_id),
-                price=trade.price,
+                price=trade_price,
                 quantity=trade_quantity
             )
             executed_trades.append(trade)
@@ -54,7 +52,7 @@ class MatchingEngine:
             
             # deduct order quantities
             order.quantity -= trade_quantity
-            resting_order -= trade_quantity
+            resting_order.quantity -= trade_quantity
             best_opposite_level.total_quantity -= trade_quantity
             
             # if resting order filled then remove from order book
@@ -69,11 +67,11 @@ class MatchingEngine:
         return executed_trades
         
     def _get_best_opposite_level(self, incoming_side: Side):
-        book_side = (self.order_books.asks if incoming_side == Side.BUY 
+        book_side = (self.order_book.asks if incoming_side == Side.BUY 
                      else self.order_book.bids)
         if not book_side:
             return None
-        _, price_level = book_side.peekitem[0]
+        _, price_level = book_side.peekitem(0)
         return price_level
 
     def cancel_order(self, order_id: int) -> bool:
