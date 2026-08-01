@@ -11,7 +11,7 @@ class OrderBook:
     - Asks = sorted in ascending order
     """
     def __init__(self):
-        # store prices in descending order
+        # map each price to a PriceLevel object in sorted dict
         self.bids: SortedDict = SortedDict(lambda price: -price)
         self.asks: SortedDict = SortedDict()
         self.order_to_node: dict[int, OrderNode] = {}
@@ -32,8 +32,43 @@ class OrderBook:
             return
         return best_ask - best_bid
 
-    def add_order(self):
-        pass
+    def add_order(self, order: Order):
+        """
+        Add order to book in logP time
+        """
+        book_side = self.bids if order.side == Side.BUY else self.asks
+        if order.price not in self.book_side:
+            self.book_side[order.price] = PriceLevel()
+        
+        node = OrderNode(order)
+        book_side[order.price].append(node)
+        self.order_to_node[order.order_id] = node
+        
+    def cancel_order(self, order_id: int) -> bool:
+        """
+        Cancel order using given order_id
+        """
+        if order_id not in self.order_to_node:
+            return False
+        node = self.order_to_node[order_id]
+        order = node.order
+        book_side = self.bids if order.side == Side.BUY else self.asks
+        price_level = book_side.get(order.price)
+        
+        if price_level:
+            # remove order from price level
+            price_level.remove(node)
+            if len(price_level) == 0:
+                del book_side[order.price]
+        
+        del self.order_to_node[order_id]
+        return True
 
-    def cancel_order(self):
-        pass
+    def get_l2_snapshot(self, depth: int = 20) -> tuple[list[tuple[Decimal, Decimal]], list[tuple[Decimal, Decimal]]]:
+        """
+        Display level 2 data of orderbook - best n (depth) prices 
+        and total quantity for bid / ask sides of orderbook.
+        """
+        bids_l2 = [(price, level.total_quantity) for price, level in list(self.bids.items())[:depth]]
+        asks_l2 = [(price, level.total_quantity) for price, level in list(self.asks.items())[:depth]]
+        return bids_l2, asks_l2
