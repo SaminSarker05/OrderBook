@@ -18,16 +18,16 @@ class Order:
     side: Side
     price: Decimal
     quantity: int
-    original_quantity: Decimal
+    original_quantity: Decimal = field(init=False)
     order_type: OrderType = OrderType.LIMIT
-    timestamp: int = field(default_factory=time.perf_counter_ns())
+    timestamp: int = field(default_factory=time.perf_counter_ns)
     
     def __post_init__(self):
         self.original_quantity = self.quantity
     
     @property
     def is_filled(self) -> bool:
-        return self.size <= 0
+        return self.quantity <= 0
 
     @property
     def fill_percentage(self) -> float:
@@ -43,4 +43,4 @@ class Trade:
     sell_order_id: int
     price: Decimal
     quantity: Decimal
-    timestamp: int = field(default_factory=time.perf_counter_ns())
+    timestamp: int = field(default_factory=time.perf_counter_ns)
