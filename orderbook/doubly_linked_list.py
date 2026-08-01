@@ -1,21 +1,35 @@
-from models import Order
+from orderbook.models import Order
 
-class Node:
+class OrderNode:
+    """
+    Node in double linked list wrapping a Order.
+    """
     def __init__(self, order: Order):
         self.order = order
         self.next = None
         self.prev = None
 
 class DoublyLinkedList:
+    """
+    Doubly Linked List reprseting a FIFO time-priority queue.
+    O(1) append to tail, pop from head, and removal of nodes.
+    """
     def __init__(self):
         self.head = Node()
         self.tail = Node()
-        self.size = 0
+        self._size = 0
 
         self.head.next = self.tail
         self.tail.prev = self.head
     
-    def unlink(self, node: Node) -> Node:
+    def append(self, order: OrderNode) -> OrderNode:
+        new_node = OrderNode(order)
+        self._add_to_tail(new_node)
+
+        self._size += 1
+        return new_node
+    
+    def unlink(self, node: OrderNode) -> Node:
         next_node = node.next
         prev_node = node.prev
 
@@ -24,7 +38,7 @@ class DoublyLinkedList:
         
         return node
     
-    def _add_to_tail(self, node: Node):
+    def _add_to_tail(self, node: OrderNode):
         curr_oldest_order = self.tail.prev
         
         curr_oldest_order.next = node
@@ -32,16 +46,9 @@ class DoublyLinkedList:
         
         node.next = self.tail
         self.tail.prev = node
-    
-    def append(self, order: Order) -> Node:
-        new_node = Node(order)
-        self._add_to_tail(new_node)
 
-        self.size += 1
-        return new_node
-
-    def pop_left(self) -> Order | None:
-        if self.size == 0:
+    def pop_front(self) -> OrderNOde | None:
+        if self._size == 0:
             return None
     
         most_recent_order = self.head.next
@@ -50,8 +57,14 @@ class DoublyLinkedList:
         self.head.next = new_most_recent_order
         new_most_recent_order.prev = self.head
         
-        self.size -= 1
+        self._size -= 1
         return most_recent_order.order
     
-    def is_empty(self) -> bool:
-        return self.head.next == self.tail
+    def __len__(self) -> int:
+        return self._size
+
+    def __iter__(self) -> Iterator[OrderNode]:
+        curr = self.head.next
+        while curr != self.tail:
+            yield curr
+            curr = curr.next
