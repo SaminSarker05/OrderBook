@@ -2,16 +2,20 @@ from .doubly_linked_list import DoublyLinkedList, Node
 from .models import Order
 
 class PriceLevel:
-    def __init__(self, price: float):
+    """
+    """
+    def __init__(self, price: Decimal):
         self.price = price
         self.orders = DoublyLinkedList()
-        self.total_volume: int = 0
+        self.total_quantity: Decimal = Decimal('0')
     
-    def add_order(self, order: Order) -> Node:
-        new_node = self.orders.append(order)
-        self.total_volume += new_node.order.quantity
-        return new_node
+    def append(self, node: OrderNOde) -> None:
+        self.orders.append(order)
+        self.total_quantity += node.order.quantity
     
-    def remove_node(self, node: Node) -> None:
-        node = self.orders.unlink(node)
-        self.total_volume -= node.order.quantity
+    def remove(self, node: OrderNode) -> None:
+        self.orders.unlink(node)
+        self.total_quantity -= node.order.quantity
+    
+    
+    
