@@ -11,7 +11,7 @@ class MatchingEngine:
         self.trade_counter = 0
         self.trades: list[Trade] = []
     
-    def process_order(self, order: Order) -> List[Trade]:
+    def process_order(self, order: Order) -> list[Trade]:
         executed_trades: list[Trade] = []
     
         while order.quantity > Decimal('0'):
