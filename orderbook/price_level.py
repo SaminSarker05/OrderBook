@@ -29,7 +29,7 @@ class PriceLevel:
     
     def peek(self) -> OrderNode | None:
         """
-        Get oldest order node without removing.
+        Get oldest/first order node without removing.
         """
         if len(self.orders) != 0:
             return self.orders.head.next

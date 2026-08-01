@@ -12,6 +12,7 @@ class OrderBook:
     """
     def __init__(self):
         # map each price to a PriceLevel object in sorted dict
+        # TODO(): make own sorteddict and red/black tree
         self.bids: SortedDict = SortedDict(lambda price: -price)
         self.asks: SortedDict = SortedDict()
         self.order_to_node: dict[int, OrderNode] = {}
