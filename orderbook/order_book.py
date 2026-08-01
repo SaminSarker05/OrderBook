@@ -38,8 +38,8 @@ class OrderBook:
         Add order to book in logP time
         """
         book_side = self.bids if order.side == Side.BUY else self.asks
-        if order.price not in self.book_side:
-            self.book_side[order.price] = PriceLevel()
+        if order.price not in book_side:
+            book_side[order.price] = PriceLevel()
         
         node = OrderNode(order)
         book_side[order.price].append(node)

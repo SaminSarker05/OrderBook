@@ -17,7 +17,7 @@ class Order:
     order_id: int
     side: Side
     price: Decimal
-    quantity: int
+    quantity: Decimal
     original_quantity: Decimal = field(init=False)
     order_type: OrderType = OrderType.LIMIT
     timestamp: int = field(default_factory=time.perf_counter_ns)
