@@ -34,7 +34,7 @@ class Order:
         if self.original_quantity == 0:
             return 0.0
         filled = self.original_quantity - self.quantity
-        return float(filled / self.original_quantity) * Decimal('100')
+        return float((filled / self.original_quantity) * Decimal('100'))
 
 @dataclass
 class Trade: 

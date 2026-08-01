@@ -37,6 +37,3 @@ class OrderBook:
 
     def cancel_order(self):
         pass
-
-    
-        

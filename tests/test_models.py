@@ -16,3 +16,4 @@ def test_create_order():
     assert order.original_quantity == Decimal('50')
     assert order.is_filled is False
     assert order.fill_percentage == 0.0
+
