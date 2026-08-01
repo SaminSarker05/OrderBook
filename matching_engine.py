@@ -2,10 +2,10 @@ from decimal import Decimal
 from orderbook.models import Order, Trade, Side, OrderType
 from orderbook.order_book import OrderBook
 
+################################################################################
+
 class MatchingEngine:
-    """
-    Execute LIMIT and MARKET orders using price-time priority.
-    """
+    """Execute LIMIT and MARKET orders using price-time priority."""
     def __init__(self):
         self.order_book = OrderBook()
         self.trade_counter = 0
@@ -17,31 +17,35 @@ class MatchingEngine:
         while order.quantity > Decimal('0'):
             best_opposite_level = self._get_best_opposite_level(order.side)
             if not best_opposite_level:
-                # no more orders that we can use
                 break
             
-            # ensure LIMIT order feasible
+            # ensure LIMIT order feasible and price crossover
             if order.order_type == OrderType.LIMIT:
-                if order.side == Side.BUY and order.price < best_opposite_level.price:
+                if (order.side == Side.BUY 
+                    and order.price < best_opposite_level.price):
                     break
-                if order.side == Side.SELL and order.price > best_opposite_level.price:
+                if (order.side == Side.SELL 
+                    and order.price > best_opposite_level.price):
                     break
             
-            # if no gap for LIMIT order or this is a MARKET order then continue
+            # match against oldest order
             resting_order_node = best_opposite_level.peek()
             if not resting_order_node:
                 break
         
             resting_order = resting_order_node.order
             trade_quantity = min(order.quantity, resting_order.quantity)
-            trade_price = resting_order.price  # trade occurs at maker/resting order price
+            # trade occurs at resting order price
+            trade_price = resting_order.price
             
             # record trade
             self.trade_counter += 1
             trade = Trade(
-                trade_id = self.trade_counter,
-                buy_order_id=order.order_id if order.side == Side.BUY else resting_order.order_id,
-                sell_order_id=order.order_id if order.side == Side.SELL else resting_order.order_id,
+                trade_id=self.trade_counter,
+                buy_order_id=(order.order_id if order.side == Side.BUY 
+                              else resting_order.order_id),
+                sell_order_id=(order.order_id if order.side == Side.SELL 
+                              else resting_order.order_id),
                 price=trade.price,
                 quantity=trade_quantity
             )
@@ -57,18 +61,21 @@ class MatchingEngine:
             if resting_order.is_filled:
                 self.order_book.cancel_order(resting_order.order_id)
             
-        # if incoming order has remaining quantity -> add to resting book
-        if order.quantity > Decimal('0') and order.order_type == OrderType.LIMIT:
+        # if incoming order has remaining quantity then add to resting book
+        if (order.quantity > Decimal('0') 
+            and order.order_type == OrderType.LIMIT):
             self.order_book.add_order(order)
         
         return executed_trades
         
     def _get_best_opposite_level(self, incoming_side: Side):
-        book_side = self.order_books.asks if incoming_side == Side.BUY else self.order_book.bids
+        book_side = (self.order_books.asks if incoming_side == Side.BUY 
+                     else self.order_book.bids)
         if not book_side:
             return None
         _, price_level = book_side.peekitem[0]
         return price_level
 
     def cancel_order(self, order_id: int) -> bool:
+        """Cancel resting order by order_id"""
         return self.order_book.cancel_order(order_id)

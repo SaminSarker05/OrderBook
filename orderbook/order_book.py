@@ -7,7 +7,7 @@ from orderbook.price_level import PriceLevel
 class OrderBook:
     """
     Price-time priority order book.
-    - Bids = sorted in decreasing order
+    - Bids = sorted in decreasing order 
     - Asks = sorted in ascending order
     """
     def __init__(self):
