@@ -1,17 +1,18 @@
-from orderbook.models import Order
+from models import Order
+from typing import Iterator
 
 class OrderNode:
     """
     Node in double linked list wrapping an Order.
     """
-    def __init__(self, order: Order):
+    def __init__(self, order: Order | None = None):
         self.order = order
         self.next = None
         self.prev = None
 
 class DoublyLinkedList:
     """
-    Doubly Linked List reprseting a FIFO time-priority queue.
+    Doubly Linked List representing a FIFO time-priority queue.
     O(1) append to tail, pop from head, and removal of nodes.
     """
     def __init__(self):
@@ -23,11 +24,17 @@ class DoublyLinkedList:
         self.tail.prev = self.head
     
     def append(self, new_node: OrderNode) -> None:
+        """
+        Append given OrderNode to tail of the doubly linked list.
+        """
         self._add_to_tail(new_node)
-
         self._size += 1
     
-    def remove(self, node: OrderNode) -> Node:
+    def remove(self, node: OrderNode) -> OrderNode:
+        """
+        Remove or unlink node from list by resetting pointers of
+        neighboring nodes.
+        """
         next_node = node.next
         prev_node = node.prev
 
@@ -47,6 +54,9 @@ class DoublyLinkedList:
         self.tail.prev = node
 
     def pop_front(self) -> OrderNode | None:
+        """
+        Remove and return most recent order in linked list.
+        """
         if self._size == 0:
             return None
     
