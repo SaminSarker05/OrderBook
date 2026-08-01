@@ -77,5 +77,5 @@ class MatchingEngine:
         return price_level
 
     def cancel_order(self, order_id: int) -> bool:
-        """Cancel resting order by order_id"""
+        """Cancel resting order by order_id."""
         return self.order_book.cancel_order(order_id)

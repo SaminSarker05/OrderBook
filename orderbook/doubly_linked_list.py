@@ -2,9 +2,7 @@ from orderbook.models import Order
 from typing import Iterator
 
 class OrderNode:
-    """
-    Node in double linked list wrapping an Order.
-    """
+    """Node in double linked list wrapping an Order."""
     def __init__(self, order: Order | None = None):
         self.order = order
         self.next = None
@@ -24,9 +22,7 @@ class DoublyLinkedList:
         self.tail.prev = self.head
     
     def append(self, new_node: OrderNode) -> None:
-        """
-        Append given OrderNode to tail of the doubly linked list.
-        """
+        """Append given OrderNode to tail of the doubly linked list."""
         self._add_to_tail(new_node)
         self._size += 1
     
@@ -54,9 +50,7 @@ class DoublyLinkedList:
         self.tail.prev = node
 
     def pop_front(self) -> OrderNode | None:
-        """
-        Remove and return most recent order in linked list.
-        """
+        """Remove and return most recent order in linked list."""
         if self._size == 0:
             return None
     
