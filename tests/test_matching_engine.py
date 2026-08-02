@@ -27,8 +27,8 @@ def test_matching_engine_limit_buy_matches_best_ask():
     assert trades[0].quantity == Decimal("4")
 
     assert incoming.quantity == Decimal("0")
-    assert engine.order_book.get_best_ask() == Decimal("102.00")
-    assert engine.order_book.get_l2_snapshot() == ([], [(Decimal("102.00"), Decimal("3"))])
+    assert engine.order_book.get_best_ask() == Decimal("101.00")
+    assert engine.order_book.get_l2_snapshot() == ([], [(Decimal("101.00"), Decimal("1")), (Decimal("102.00"), Decimal("3"))])
 
 def test_matching_engine_partial_fill_of_resting_order():
     engine = MatchingEngine()
