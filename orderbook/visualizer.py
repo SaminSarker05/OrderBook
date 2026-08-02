@@ -8,3 +8,5 @@ class OrderBookVisualizer:
     def render(order_book: OrderBook, recent_trades: list[Trade] = None, depth: int = 20) -> str:
         bids_l2, asks_l2 = order_book.get_l2_snapshot(depth=depth)
         
+        
+        
