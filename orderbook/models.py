@@ -31,8 +31,8 @@ class Order:
 
     @property
     def fill_percentage(self) -> float:
-        if self.original_quantity == 0:
-            return 0.0
+        if self.original_quantity == Decimal('0'):
+            return 100.0
         filled = self.original_quantity - self.quantity
         return float((filled / self.original_quantity) * Decimal('100'))
 
